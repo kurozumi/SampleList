@@ -42,9 +42,7 @@ class SampleList extends SC_Plugin_Base
     public function __construct(array $arrSelfInfo)
     {
         if ($arrSelfInfo["enable"] == 1) {
-            $plugin = SC_Plugin_Util_Ex::getPluginByPluginCode($arrSelfInfo["plugin_code"]);
-
-            define("PLG_PRODUCT_TYPE_SAMPLE", $plugin["free_field2"]);
+            define("PLG_PRODUCT_TYPE_SAMPLE", $arrSelfInfo["free_field2"]);
             define("PLG_SAMPLE_URLPATH", ROOT_URLPATH . "sample");
         }
 
@@ -80,8 +78,7 @@ class SampleList extends SC_Plugin_Base
      */
     public function uninstall($arrPlugin, $objPluginInstaller = null)
     {
-        $plugin = SC_Plugin_Util_Ex::getPluginByPluginCode($arrPlugin["plugin_code"]);
-        $page_id = unserialize($plugin["free_field1"]);
+        $page_id = unserialize($arrPlugin["free_field1"]);
 
         $objLayout = new SC_Helper_PageLayout_Ex();
         $objLayout->lfDelPageData($page_id[DEVICE_TYPE_PC], DEVICE_TYPE_PC);
@@ -138,14 +135,12 @@ class SampleList extends SC_Plugin_Base
     {
         $masterData = new SC_DB_MasterData_Ex();
 
-        $plugin = SC_Plugin_Util_Ex::getPluginByPluginCode($arrSelfInfo["plugin_code"]);
-
         $objQuery = & SC_Query_Ex::getSingletonInstance();
 
         $objQuery->begin();
 
         // サンプル商品用の商品種別IDを削除
-        $objQuery->delete("mtb_product_type", "id=?", array($plugin["free_field2"]));
+        $objQuery->delete("mtb_product_type", "id=?", array($arrPlugin["free_field2"]));
 
         $masterData->clearCache("mtb_product_type");
 
